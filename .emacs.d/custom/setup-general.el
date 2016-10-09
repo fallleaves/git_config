@@ -59,6 +59,9 @@
 (setq display-buffer-alist '(("\\`\\*e?shell" display-buffer-pop-up-window)))
 (global-set-key (kbd "C-c t") 'shell)
 (add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
+(require 'recentf)
+(recentf-mode 1)
+(global-set-key (kbd "C-x f") 'recentf-open-files)
 
 ;; show unncessary whitespace that can mess up your diff
 (add-hook 'prog-mode-hook
