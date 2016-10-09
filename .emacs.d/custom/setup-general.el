@@ -9,7 +9,9 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 
+;; misc
 (defalias 'yes-or-no-p 'y-or-n-p)
+(global-set-key (kbd "C-1") 'delete-other-windows)
 
 ;; show unncessary whitespace that can mess up your diff
 (add-hook 'prog-mode-hook
@@ -40,6 +42,7 @@
 ;; sr-speedbar
 (use-package sr-speedbar
   :init)
+  (global-set-key (kbd "C-c b") 'sr-speedbar-toggle)
 
 ;; company
 (use-package company
