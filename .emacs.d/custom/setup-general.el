@@ -1,8 +1,13 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 
+(setq split-width-threshold 0)
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
+
+;; set c++-mode default for .c and .h
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.c\\'" . c++-mode))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -40,26 +45,34 @@
 (use-package company
   :init
   (global-company-mode 1)
+  (delete 'company-clang company-backends)
   (delete 'company-semantic company-backends)
   (add-hook 'after-init-hook 'global-company-mode))
-  ;;(define-key c-mode-map  [(control tab)] 'company-complete)
-  ;;(define-key c++-mode-map  [(control tab)] 'company-complete)
 
-;; Package: projejctile
-(use-package projectile
+;; cc-mode
+(use-package cc-mode
+  :init)
+  (define-key c++-mode-map  [(tab)] 'company-complete)
+
+;; style I want to use in c++ mode
+(c-add-style "my-style"
+             '("stroustrup"
+               (c-basic-offset . 2)
+               (c-offsets-alist . ((inline-open . 0)
+                                   (brace-list-open . 0)
+                                   (statement-case-open . +)))))
+
+(defun my-c++-mode-hook ()
+  (c-set-style "my-style")
+  (auto-fill-mode)
+  (c-toggle-auto-hungry-state 1))
+
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
+
+;; company-c-headers
+(use-package company-c-headers
   :init
-  (projectile-global-mode)
-  (setq projectile-enable-caching t))
-
-;; Package zygospore
-(use-package zygospore
-  :bind (("C-x 1" . zygospore-toggle-delete-other-windows)
-         ("RET" .   newline-and-indent)))
-
-  ; automatically indent when press RET
-
-;; activate whitespace-mode to view all whitespace characters
-(global-set-key (kbd "C-c w") 'whitespace-mode)
-(windmove-default-keybindings)
+  (add-to-list 'company-backends 'company-c-headers))
+  (add-to-list 'company-c-headers-path-system "/usr/include/c++/5/")
 
 (provide 'setup-general)

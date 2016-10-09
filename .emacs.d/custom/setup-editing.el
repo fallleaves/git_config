@@ -13,7 +13,6 @@
 (set-language-environment "UTF-8")
 (prefer-coding-system 'utf-8)
 
-(setq-default indent-tabs-mode nil)
 (delete-selection-mode)
 (global-set-key (kbd "RET") 'newline-and-indent)
 
@@ -77,7 +76,7 @@
   (add-hook 'fundamental-mode 'ws-butler-mode))
 
 ;; PACKAGE: comment-dwim-2
-(global-set-key (kbd "M-;") 'comment-dwim-2)
+;;(global-set-key (kbd "M-;") 'comment-dwim-2)
 
 ;; PACKAGE: anzu
 ;; GROUP: Editing -> Matching -> Isearch -> Anzu
@@ -251,5 +250,6 @@ Position the cursor at it's beginning, according to the current mode."
   (indent-according-to-mode))
 
 (global-set-key (kbd "M-o") 'prelude-smart-open-line)
+(global-set-key (kbd "C-o") 'prelude-smart-open-line-above)
 
 (provide 'setup-editing)
