@@ -126,12 +126,13 @@
       ;; If nil, you can slightly boost invoke speed in exchange for text color
       (setq helm-swoop-speed-or-color t))
 
-    (helm-mode 1)
+    (helm-mode 1)))
 
-    (use-package helm-projectile
-      :init
-      (helm-projectile-on)
-      (setq projectile-completion-system 'helm)
-      (setq projectile-indexing-method 'alien))))
+;;    (use-package helm-projectile
+;;      :init
+;;      (helm-projectile-on)
+;;      (setq projectile-completion-system 'helm)
+;;      (setq projectile-indexing-method 'alien))
+
 
 (provide 'setup-helm)

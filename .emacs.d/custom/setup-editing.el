@@ -86,6 +86,20 @@
   (global-set-key (kbd "M-%") 'anzu-query-replace)
   (global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp))
 
+;; Package: smartparens
+(use-package smartparens
+  :init)
+  (require 'smartparens-config)
+  (show-smartparens-global-mode +1)
+  (smartparens-global-mode 1)
+
+  ;; when you press RET, the curly braces automatically
+  ;; add another newline
+  (sp-with-modes '(c-mode c++-mode)
+    (sp-local-pair "{" nil :post-handlers '(("||\n[i]" "RET")))
+    (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
+                                              ("* ||\n[i]" "RET"))))
+
 ;; PACKAGE: iedit
 (use-package iedit
   :bind (("C-;" . iedit-mode))
@@ -249,7 +263,7 @@ Position the cursor at it's beginning, according to the current mode."
   (forward-line -1)
   (indent-according-to-mode))
 
-(global-set-key (kbd "M-o") 'prelude-smart-open-line)
-(global-set-key (kbd "C-o") 'prelude-smart-open-line-above)
+(global-set-key (kbd "C-o") 'prelude-smart-open-line)
+(global-set-key (kbd "M-o") 'prelude-smart-open-line-above)
 
 (provide 'setup-editing)

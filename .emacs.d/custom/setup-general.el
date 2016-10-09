@@ -1,7 +1,48 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(toggle-scroll-bar -1)
 
-(setq split-width-threshold 0)
+;; automatically open window horizonlly or vertically
+;;(setq split-width-threshold 0)
+;;(setq split-height-threshold nil)
+(defun display-new-buffer (buffer force-other-window)
+  (or (get-buffer-window buffer)
+    (if (one-window-p)
+      (let ((new-win
+            (if (> (window-width) 100)
+            (split-window-horizontally)
+            (split-window-vertically))))
+        (set-window-buffer new-win buffer)
+        new-win)
+      (let ((new-win (get-lru-window)))
+        (set-window-buffer new-win buffer)
+        new-win))))
+(setq display-buffer-function 'display-new-buffer)
+
+(defun window-toggle-split-direction ()
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+(global-set-key (kbd "C-2") 'window-toggle-split-direction)
+
 (setq gc-cons-threshold 100000000)
 (setq inhibit-startup-message t)
 
@@ -12,6 +53,12 @@
 ;; misc
 (defalias 'yes-or-no-p 'y-or-n-p)
 (global-set-key (kbd "C-1") 'delete-other-windows)
+(global-set-key (kbd "C-0") 'delete-window)
+(global-linum-mode 1)
+(setq compile-command "make -k -j4 ")
+(setq display-buffer-alist '(("\\`\\*e?shell" display-buffer-pop-up-window)))
+(global-set-key (kbd "C-c t") 'shell)
+(add-hook 'window-setup-hook 'toggle-frame-fullscreen t)
 
 ;; show unncessary whitespace that can mess up your diff
 (add-hook 'prog-mode-hook
@@ -27,7 +74,6 @@
 ;; Compilation
 (global-set-key (kbd "<f5>") (lambda ()
                                (interactive)
-                               (setq-local compilation-read-command nil)
                                (call-interactively 'compile)))
 
 ;; setup GDB
@@ -68,7 +114,7 @@
 (defun my-c++-mode-hook ()
   (c-set-style "my-style")
   (auto-fill-mode)
-  (c-toggle-auto-hungry-state 1))
+  (c-toggle-hungry-state 1))
 
 (add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
